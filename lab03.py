@@ -29,12 +29,21 @@ if __name__ == '__main__':
         else:
             print('Enter a valid IP address!')
     
+    mask_bits = int(input('Enter the mask bits: '))
+    while mask_bits <= 0 or mask_bits > 32:
+        print('Mask bits range: 1 - 32')
+        print('Try again!')
+        mask_bits = int(input('Enter the mask bits: '))
+
     # convert ip to int
     for i, val in enumerate(ip_arr_decimal):
         ip_arr_decimal[i] = int(val)
 
     # convert ip to bin
     ip_addr_bin = []
+    # for dec_num in ip_arr_decimal:
+    #     ip_addr_bin.append(bin(dec_num))
+
     for num in ip_arr_decimal:
         bin_num =[] 
         decimal_to_binary(num, bin_num)
@@ -42,7 +51,6 @@ if __name__ == '__main__':
         if bin_size < 8:
             for i in range(8 - bin_size):
                 bin_num.insert(0, 0)
-
         ip_addr_bin.append(bin_num)
     
     temp = []
@@ -51,10 +59,7 @@ if __name__ == '__main__':
             temp.append(j)
     ip_addr_bin = temp
 
-    mask_bits = int(input('Enter the mask bits: '))
-    print('total occupied bits: ', mask_bits)
-    network_id_addr_bin = []
-    
+    network_id_addr_bin = []    
     for i in range(mask_bits):
         network_id_addr_bin.append(ip_addr_bin[i])
 
@@ -63,15 +68,6 @@ if __name__ == '__main__':
 
     network_id_addr_dec = []
     bin_list_to_dec(network_id_addr_bin,network_id_addr_dec)
-    
-    # A subnet consists of a “Network ID” and a “Broadcast ID”.
-    # (first IP address in the network range)
-    # The Network ID is its beginning number and 
-    # it is always an even number. 
-    # It designates a particular subnet to give it an identity 
-    # on the network. 
-    # When a subnet is refer to, 
-    # the Network ID and the subnet's subnet mask is used.
 
     broadcast_ip_addr_bin = []
     copy_list(ip_addr_bin, broadcast_ip_addr_bin)
@@ -80,34 +76,6 @@ if __name__ == '__main__':
     
     broadcast_ip_addr_dec = []
     bin_list_to_dec(broadcast_ip_addr_bin, broadcast_ip_addr_dec)
-    
-    ip = {
-        'binary': ip_addr_bin,
-        'decimal': ip_arr_decimal
-    }
-
-    network_id_addr = {
-        'decimal': network_id_addr_dec,
-        'binary': network_id_addr_bin
-    }
-    
-    broadcast_ip_addr = {
-        'decimal': broadcast_ip_addr_dec,
-        'binary': broadcast_ip_addr_bin
-    }
-
-    print('IP decimal:            ', ip['decimal'])
-    print('IP binary:             ', ip['binary'])
-    print('Net ID decimal:        ', network_id_addr['decimal'])
-    print('Net ID binary:         ', network_id_addr['binary'])
-    print('Broadcast IP decimal:  ', broadcast_ip_addr['decimal'])
-    print('Broadcast IP binary:   ', broadcast_ip_addr['binary'])
-
-    # A broadcast address is an IP address 
-    # that is used to target all systems on a specific subnet network 
-    # instead of single hosts. 
-    # In other words broadcast address allows information 
-    # to be sent to all machines on a given subnet rather than to a specific machine.
 
     subnet_mask_ip_addr_bin = []
     copy_list(ip_addr_bin, subnet_mask_ip_addr_bin)
@@ -120,26 +88,81 @@ if __name__ == '__main__':
     subnet_mask_ip_addr_dec = []
     bin_list_to_dec(subnet_mask_ip_addr_bin, subnet_mask_ip_addr_dec)
 
+    if mask_bits != 32:
+        min_host_dec = []
+        min_host_bin = []
+        
+        max_host_dec = []
+        max_host_bin = []
+
+        copy_list(network_id_addr_dec, min_host_dec)
+        if min_host_dec[-1] == 255:
+            if min_host_dec[-2] == 255: 
+                if min_host_dec[-3] == 255:
+                    min_host_dec[-4] += 1
+                else:
+                    min_host_dec[-3] += 1
+            else:
+                min_host_dec[-2] += 1
+        else:
+            min_host_dec[-1] += 1
+
+        for dec_num in min_host_dec:
+            min_host_bin.append(bin(dec_num))
+
+        # print('Min Host decimal:      ', min_host_dec)
+        # print('Min Host binary:       ', min_host_bin)
+
+        copy_list(broadcast_ip_addr_dec, max_host_dec)
+
+        if max_host_dec[-1] == 0:
+            if max_host_dec[-2] == 0: 
+                if max_host_dec[-3] == 0:
+                    max_host_dec[-4] -= 1
+                else:
+                    max_host_dec[-3] -= 1
+            else:
+                max_host_dec[-2] -= 1
+        else:
+            max_host_dec[-1] -= 1
+
+        for dec_num in max_host_dec:
+            max_host_bin.append(bin(dec_num))
+
+        # print('Max Host decimal:      ', max_host_dec)
+        # print('Max Host binary:       ', min_host_bin)
+    else:
+        print('Host Range:             N/A')
+        min_host_dec = 'N/A'
+        max_host_dec = 'N/A'
+    
+    ip = {
+        'binary': ip_addr_bin,
+        'decimal': ip_arr_decimal
+    }
+
+    network_id_addr = {
+        'decimal': network_id_addr_dec,
+        'binary': network_id_addr_bin
+    }
+
     subnet_mask_ip_addr = {
         'decimal': subnet_mask_ip_addr_dec,
         'binary': subnet_mask_ip_addr_bin
     }
+    
+    broadcast_ip_addr = {
+        'decimal': broadcast_ip_addr_dec,
+        'binary': broadcast_ip_addr_bin
+    }
 
+    host_range = {
+        'max': max_host_dec,
+        'min': min_host_dec
+    }
+
+    print('IP decimal:            ', ip['decimal'])
+    print('Net ID decimal:        ', network_id_addr['decimal'])
+    print('Broadcast IP decimal:  ', broadcast_ip_addr['decimal'])
     print('Subnet Mask decimal:   ', subnet_mask_ip_addr['decimal'])
-    print('Subnet Mask binary:    ', subnet_mask_ip_addr['binary'])
-
-    
-    # in decimal representation
-
-    max_num_host = None
-    
-    min_host_dec = []
-    min_host_bin = []
-    
-    max_host_dec = []
-    max_host_bin = []
-
-    copy_list(network_id_addr_bin, min_host_bin)
-    # Need to add 1
-    bin_list_to_dec(min_host_bin, min_host_dec)
-    print(bin(min_host_dec[0]))
+    print('Host Range:             ' + str(host_range['min']) + ' - ' + str(host_range['max']))
