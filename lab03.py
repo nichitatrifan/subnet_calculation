@@ -129,10 +129,13 @@ if __name__ == '__main__':
         for dec_num in max_host_dec:
             max_host_bin.append(bin(dec_num))
         
-        usable_hosts = 1
-        for i in range(4):
-            usable_hosts += abs(max_host_dec[i] - min_host_dec[i])
-        total_hosts = usable_hosts + 2
+        # usable_hosts = 1
+        # for i in range(4):
+        #     usable_hosts += abs(max_host_dec[i] - min_host_dec[i])
+        # total_hosts = usable_hosts + 2
+
+        total_hosts = 2**(32-mask_bits)
+        usable_hosts = total_hosts - 2
 
     elif mask_bits == 31:
         min_host_dec = 'N/A'
@@ -174,10 +177,56 @@ if __name__ == '__main__':
         'total_hosts': total_hosts
     }
 
-    print('IP decimal:            ', ip['decimal'])
-    print('Net ID decimal:        ', network_id_addr['decimal'])
-    print('Broadcast IP decimal:  ', broadcast_ip_addr['decimal'])
-    print('Subnet Mask decimal:   ', subnet_mask_ip_addr['decimal'])
-    print('Host Range:             ' + str(host_range['min']) + ' - ' + str(host_range['max']))
-    print('Number of Usable Hosts: ', host_range['allowed_hosts'])
-    print('Total Nuber of Hosts:   ', host_range['total_hosts'])
+    # print('IP decimal:            ', ip['decimal'])
+    # print('Net ID decimal:        ', network_id_addr['decimal'])
+    # print('Broadcast IP decimal:  ', broadcast_ip_addr['decimal'])
+    # print('Subnet Mask decimal:   ', subnet_mask_ip_addr['decimal'])
+    # print('Host Range:             ' + str(host_range['min']) + ' - ' + str(host_range['max']))
+    # print('Number of Usable Hosts: ', host_range['allowed_hosts'])
+    # print('Total Nuber of Hosts:   ', host_range['total_hosts'])
+
+    ################ OUTPUT IP Address ################
+    print('IP: ', end='')
+    for i, num in enumerate(ip['decimal']):
+        if i==3:
+            print(int(num))
+        else:  
+            print(int(num),end='.')
+    
+    print('Net ID: ', end='')
+    for i, num in enumerate(network_id_addr['decimal']):
+        if i==3:
+            print(int(num))
+        else:  
+            print(int(num),end='.')
+    
+    print('Broadcast IP: ', end='')
+    for i, num in enumerate(broadcast_ip_addr['decimal']):
+        if i==3:
+            print(int(num))
+        else:  
+            print(int(num),end='.')
+    
+    print('Subnet Mask: ', end='')
+    for i, num in enumerate(subnet_mask_ip_addr['decimal']):
+        if i==3:
+            print(int(num))
+        else:  
+            print(int(num),end='.')
+    
+    print('Host Range: ', end='')
+    for i, num in enumerate(host_range['min']):
+        if i==3:
+            print(int(num), end=' - ')
+        else:  
+            print(int(num),end='.')
+    
+    for i, num in enumerate(host_range['max']):
+        if i==3:
+            print(int(num))
+        else:  
+            print(int(num),end='.')
+
+    print('Allowed Hosts: ' + str(host_range['allowed_hosts']))
+    print('Total Hosts: ' + str(host_range['total_hosts']))
+    
